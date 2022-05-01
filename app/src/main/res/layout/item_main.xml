@@ -25,6 +25,17 @@
             android:text="Kotlin basic"/>
 
 
+        <TextView
+            android:id="@+id/transcription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="Kotlin basic"/>
+
+
 
 
     </androidx.cardview.widget.CardView>
