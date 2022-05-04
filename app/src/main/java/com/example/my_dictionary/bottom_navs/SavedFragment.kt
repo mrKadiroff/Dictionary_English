@@ -6,6 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.my_dictionary.R
+import com.example.my_dictionary.Room.AppDatabase
+import com.example.my_dictionary.Room.Word
+import com.example.my_dictionary.adapters.HistoryAdapter
+import com.example.my_dictionary.databinding.FragmentSavedBinding
+import com.example.my_dictionary.databinding.FragmentSeenBinding
+import com.example.my_dictionary.databinding.ItemSeenBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,12 +36,48 @@ class SavedFragment : Fragment() {
         }
     }
 
+    lateinit var binding: FragmentSavedBinding
+    lateinit var appDatabase: AppDatabase
+    lateinit var historyAdapter: HistoryAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_saved, container, false)
+        binding = FragmentSavedBinding.inflate(layoutInflater, container, false)
+        appDatabase = AppDatabase.getInstance(binding.root.context)
+
+        setRV()
+
+
+        return binding.root
+    }
+
+    private fun setRV() {
+        val allWords = appDatabase.wordDao().getWordByStatus(true)
+
+        historyAdapter = HistoryAdapter(allWords,object: HistoryAdapter.OnItemClickListener{
+            var a = 100
+            override fun onFavouriteClick(
+                itemSeenBinding: ItemSeenBinding,
+                word: Word,
+                position: Int
+            ) {
+                itemSeenBinding.bookmark.setImageResource(R.drawable.ic_baseline_bookmark_24)
+                if (a == position) {
+                    itemSeenBinding.bookmark.setImageResource(R.drawable.ic_baseline_bookmark_24)
+                    word.saved = true
+                    appDatabase.wordDao().updateTalaba(word)
+                    a++
+                } else {
+                    itemSeenBinding.bookmark.setImageResource(R.drawable.saved)
+                    word.saved = false
+                    appDatabase.wordDao().updateTalaba(word)
+                    a = position
+                }
+            }
+        })
+        binding.itemsRv.adapter = historyAdapter
     }
 
     companion object {

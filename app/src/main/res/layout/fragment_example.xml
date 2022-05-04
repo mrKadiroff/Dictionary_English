@@ -4,20 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".bottom_navs.SavedFragment">
+    tools:context=".tab_fragments.ExampleFragment">
+
+    <TextView
+        android:id="@+id/teksttsd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/app_name"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/itemsRv"
+        android:id="@+id/rvAll"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:stackFromEnd="true"
-        app:reverseLayout="true"
-        tools:listitem="@layout/item_seen"
+        android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
+        app:layout_constraintBaseline_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.060000002"
+        tools:listitem="@layout/all_thesururs" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

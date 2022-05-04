@@ -1,8 +1,8 @@
 package com.example.my_dictionary.models
 
 data class Definition(
-    val antonyms: List<Any>,
+    val antonyms: List<String>,
     val definition: String,
     val example: String,
-    val synonyms: List<Any>
+    val synonyms: List<String>
 )

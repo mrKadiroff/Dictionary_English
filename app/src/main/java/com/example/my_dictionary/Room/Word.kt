@@ -19,4 +19,7 @@ class Word {
     @ColumnInfo(name = "savedd")
     var saved: Boolean? = null
 
+    @ColumnInfo(name = "link")
+    var uri: String? = null
+
 }

@@ -1,7 +1,9 @@
 package com.example.my_dictionary
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.navigation.NavController
@@ -16,6 +18,7 @@ class HomeActivity : AppCompatActivity() {
     lateinit var datalist:ArrayList<Saved>
     lateinit var binding: ActivityHomeBinding
     private lateinit var drawerToggle: ActionBarDrawerToggle
+    private val TAG = "HomeActivity"
     lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +59,24 @@ class HomeActivity : AppCompatActivity() {
 
             when (menuItem.itemId) {
                 R.id.home_menu -> {
+
+                      try {
+                    val share = Intent()
+                    share.action = Intent.ACTION_SEND
+                    share.setType("text/plain")
+                    share.putExtra(Intent.EXTRA_SUBJECT, "My application name")
+                    share.putExtra(
+                        Intent.EXTRA_TEXT,
+                        "Dasturimni ishlatganingizdan hursandman \n" +
+                                "https://t.me/my_apps_android \n"
+
+
+                    )
+                    startActivity(Intent.createChooser(share, "Share word..."))
+
+                } catch (e: java.lang.Exception){
+                    Log.d(TAG, "setShare: ${e.message}")}
+
 
                     binding.drawerlayout.closeDrawers()
                 }
