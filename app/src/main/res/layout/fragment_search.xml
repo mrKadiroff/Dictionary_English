@@ -38,10 +38,10 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.098"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/wordd"
-        app:layout_constraintVertical_bias="0.04">
+        app:layout_constraintVertical_bias="0.039">
 
 
         <ImageView
@@ -69,7 +69,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/audiolash"
@@ -187,7 +186,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Save"
+            android:text="Share"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,11 @@
 package com.example.my_dictionary.bottom_navs
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -65,42 +70,135 @@ class SearchFragment : Fragment(),MediaPlayer.OnPreparedListener {
         setViewPager()
         setUI()
         setMusic()
+        setCopy()
+        setSave()
+        setShare()
 
         return binding.root
     }
 
-    private fun setMusic() {
-        binding.voice.setOnClickListener {
+    private fun setShare() {
+        val allWords = appDatabase.wordDao().getAllWords()
+
+
+
+        binding.ulashish.setOnClickListener {
             if (myWord != null) {
                 try {
-//                    Log.d(TAG, "onCreateView: audi link = ${myWord!!.phonetics[0].audio}")
-                    if (myWord!!.phonetics.get(0).audio.isNotEmpty()) {
-                        Log.d(TAG, "onCreateView: $music")
-                        setPlay(myWord!!.phonetics.get(0).audio)
-                    } else if (myWord!!.phonetics.get(1).audio.isNotEmpty()) {
-                        setPlay(myWord!!.phonetics.get(1).audio)
-                    } else {
-                        Toast.makeText(requireContext(), "no fucking sound", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+                    val share = Intent()
+                    share.action = Intent.ACTION_SEND
+                    share.setType("text/plain")
+                    share.putExtra(Intent.EXTRA_SUBJECT, "My application name")
+                    share.putExtra(
+                        Intent.EXTRA_TEXT,
+                        "${myWord!!.word} \n" +
+                                "${myWord!!.meanings[0].definitions[0].definition} \n" +
+                                "${myWord!!.meanings[0].definitions[0].example} \n"
 
+                    )
+                    startActivity(Intent.createChooser(share, "Share word..."))
 
-                    Toast.makeText(context, "Audio started", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Audio error ${e.message}", Toast.LENGTH_SHORT).show()
+                } catch (e: java.lang.Exception){
+                    Log.d(TAG, "setShare: ${e.message}")
                 }
-            } else if (music != null) {
+            }else if (!allWords.isNullOrEmpty()){
                 try {
 
+                    val wordd: String =binding.wordd.getText().toString()
+                    val share = Intent()
+                    share.action = Intent.ACTION_SEND
+                    share.setType("text/plain");
+                    share.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    share.putExtra(
+                        Intent.EXTRA_TEXT,
+                        "${wordd} \n"
 
-                    setPlay(music!!)
 
-
-
-                    Toast.makeText(context, "Audio started", Toast.LENGTH_SHORT).show()
+                    )
+                    startActivity(Intent.createChooser(share, "Share word ..."))
                 } catch (e: Exception) {
-                    Toast.makeText(context, "Audio error ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, "onCreateView: ${e.message}")
                 }
+            }
+        }
+    }
+
+    private fun setSave() {
+        val wordd: String =binding.wordd.getText().toString()
+        val allWords = appDatabase.wordDao().getAllWords()
+        binding.saqlash.setOnClickListener {
+
+            for (wordDb in allWords) {
+                if (wordDb.word == wordd){
+                    if (wordDb.saved == false){
+                        val wordByName = appDatabase.wordDao().getWordByName(wordd)
+                        wordByName.saved = true
+                        appDatabase.wordDao().updateTalaba(wordByName)
+                        Toast.makeText(binding.root.context, "added", Toast.LENGTH_SHORT).show()
+                    }else{
+                        val wordByName = appDatabase.wordDao().getWordByName(wordd)
+                        wordByName.saved = false
+                        appDatabase.wordDao().updateTalaba(wordByName)
+                        Toast.makeText(binding.root.context, "removed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setCopy() {
+        val word: String =binding.wordd.getText().toString()
+        binding.nushalash.setOnClickListener {
+            setClipboard(binding.root.context, word)
+            Toast.makeText(binding.root.context, "Text copied to clipboard", Toast.LENGTH_SHORT)
+                .show()
+
+
+        }
+    }
+
+    private fun setMusic() {
+
+        binding.audiolash.setOnClickListener {
+            setSound()
+        }
+
+        binding.voice.setOnClickListener {
+            setSound()
+
+        }
+    }
+
+    private fun setSound() {
+        if (myWord != null) {
+            try {
+//                    Log.d(TAG, "onCreateView: audi link = ${myWord!!.phonetics[0].audio}")
+                if (myWord!!.phonetics.get(0).audio.isNotEmpty()) {
+                    Log.d(TAG, "onCreateView: $music")
+                    setPlay(myWord!!.phonetics.get(0).audio)
+                } else if (myWord!!.phonetics.get(1).audio.isNotEmpty()) {
+                    setPlay(myWord!!.phonetics.get(1).audio)
+                } else {
+                    Toast.makeText(requireContext(), "no fucking sound", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+
+                Toast.makeText(context, "Audio started", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(context, "Audio error ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } else if (music != null) {
+            try {
+
+
+                setPlay(music!!)
+
+
+
+                Toast.makeText(context, "Audio started", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(context, "Audio error ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -203,6 +301,19 @@ class SearchFragment : Fragment(),MediaPlayer.OnPreparedListener {
 
 
 
+    }
+
+    private fun setClipboard(context: Context, text: String) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            val clipboard =
+                context.getSystemService(Context.CLIPBOARD_SERVICE) as android.text.ClipboardManager
+            clipboard.text = text
+
+        } else {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Copied Text", text)
+            clipboard.setPrimaryClip(clip)
+        }
     }
 
     companion object {
